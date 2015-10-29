@@ -6,6 +6,7 @@ from jicbioimage.core.io import FileBackend
 
 HERE = os.path.dirname(os.path.realpath(__file__))
 
+
 def get_microscopy_collection(input_file):
     """Return microscopy collection from input file."""
     data_dir = os.path.abspath(os.path.join(HERE, "..", "data"))

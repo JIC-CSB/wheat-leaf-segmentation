@@ -11,6 +11,12 @@ import skimage.exposure
 
 @transformation
 @dtype_contract(input_dtype=bool, output_dtype=bool)
+def invert_binary(image):
+    """Return an inverted image."""
+    return np.logical_not(image)
+
+@transformation
+@dtype_contract(input_dtype=bool, output_dtype=bool)
 def erosion_binary(image, selem=None):
     return skimage.morphology.binary_erosion(image, selem)
 

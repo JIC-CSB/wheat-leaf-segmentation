@@ -18,9 +18,11 @@ from jicbioimage.transform import (
 from util import argparse_get_image
 from transform import (
     erosion_binary,
+    dilation_binary,
     rotate,
     apply_mask,
     remove_large_regions,
+    invert_binary,
 )
 
 def create_mask(image):
@@ -37,29 +39,35 @@ def create_mask(image):
             mask[np.where(region.convex_hull)] = False
     return Image.from_array(mask)
 
+def vertical_cuts(thresholded_image):
+    """Return vertical cuts to separate fused seeds."""
+    n = 50
+    selem = np.array([0,1,0]*n).reshape((n,3))
+    cuts = invert_binary(thresholded_image)
+    cuts = remove_large_regions(connected_components(cuts, background=0), max_size=500).astype(bool)
+    cuts = dilation_binary(cuts, selem=selem)
+    cuts = invert_binary(cuts)
+    return cuts
+
 def segment(image):
     """Return a segmented image and rotation angle."""
     angle = find_angle(image)
     image = rotate(image, angle)
+    mask = create_mask(image)
 
-    im = equalize_adaptive_clahe(image)
-    im = smooth_gaussian(im, sigma=(1, 0))
-    im = threshold_otsu(im)
-    watershed_mask = im
+    watershed_mask = equalize_adaptive_clahe(image)
+    watershed_mask = smooth_gaussian(watershed_mask, sigma=(1, 0))
+    watershed_mask = threshold_otsu(watershed_mask)
+    watershed_mask = apply_mask(watershed_mask, mask)
 
     n = 20
     selem = np.array([0,1,0]*n).reshape((n,3))
-    im = erosion_binary(im, selem=selem)
+    seeds = erosion_binary(watershed_mask, selem=selem)
+    seeds = apply_mask(seeds, vertical_cuts(watershed_mask))
+    seeds = remove_small_objects(seeds)
+    seeds = connected_components(seeds, connectivity=1, background=0)
 
-    mask = create_mask(image)
-
-    im = apply_mask(im, mask)
-    im = remove_small_objects(im)
-
-    segmentation = connected_components(im, connectivity=1, background=0)
-
-    watershed_mask = apply_mask(watershed_mask, mask)
-    segmentation = watershed_with_seeds(image, segmentation, mask=watershed_mask)
+    segmentation = watershed_with_seeds(image, seeds, mask=watershed_mask)
 
     return segmentation, angle
 
