@@ -19,7 +19,7 @@ def annotate(image):
     for i in segmentation.identifiers:
         region = segmentation.region_by_identifier(i)
         color = _pretty_color()
-        annotation.mask_region(region.border, color)
+        annotation.mask_region(region.border.dilate(), color)
     return annotation
 
 def main():
