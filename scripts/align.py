@@ -1,11 +1,11 @@
 """Align the tissue."""
 
 import argparse
-import logging
 
 import skimage.morphology
 import skimage.measure
 
+from jicbioimage.core.transform import transformation
 from jicbioimage.segment import connected_components
 from jicbioimage.transform import (
     equalize_adaptive_clahe,
@@ -27,10 +27,12 @@ def find_angle(image):
     angles = [p["orientation"] for p in properties]
     return sum(angles) / len(angles)
 
+@transformation
 def align(image):
     """Return an aligned image."""
     angle = find_angle(image)
     image = rotate(image, angle)
+    return image
 
 def main():
     parser = argparse.ArgumentParser(__doc__)
