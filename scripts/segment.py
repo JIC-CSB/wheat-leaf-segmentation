@@ -38,7 +38,7 @@ def create_mask(image):
     return Image.from_array(mask)
 
 def segment(image):
-    """Return a segmented image."""
+    """Return a segmented image and rotation angle."""
     angle = find_angle(image)
     image = rotate(image, angle)
 
@@ -61,7 +61,7 @@ def segment(image):
     watershed_mask = apply_mask(watershed_mask, mask)
     segmentation = watershed_with_seeds(image, segmentation, mask=watershed_mask)
 
-    return segmentation
+    return segmentation, angle
 
 
 def main():
