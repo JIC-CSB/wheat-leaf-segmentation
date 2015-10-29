@@ -25,6 +25,7 @@ from transform import (
     invert_binary,
 )
 
+
 def create_mask(image):
     """Return a mask for the region of interest."""
     selem = skimage.morphology.disk(2)
@@ -39,15 +40,18 @@ def create_mask(image):
             mask[np.where(region.convex_hull)] = False
     return Image.from_array(mask)
 
+
 def vertical_cuts(thresholded_image):
     """Return vertical cuts to separate fused seeds."""
     n = 50
-    selem = np.array([0,1,0]*n).reshape((n,3))
+    selem = np.array([0, 1, 0] * n).reshape((n, 3))
     cuts = invert_binary(thresholded_image)
-    cuts = remove_large_regions(connected_components(cuts, background=0), max_size=500).astype(bool)
+    cuts = connected_components(cuts, background=0)
+    cuts = remove_large_regions(cuts, max_size=500).astype(bool)
     cuts = dilation_binary(cuts, selem=selem)
     cuts = invert_binary(cuts)
     return cuts
+
 
 def segment(image):
     """Return a segmented image and rotation angle."""
@@ -61,7 +65,7 @@ def segment(image):
     watershed_mask = apply_mask(watershed_mask, mask)
 
     n = 20
-    selem = np.array([0,1,0]*n).reshape((n,3))
+    selem = np.array([0, 1, 0] * n).reshape((n, 3))
     seeds = erosion_binary(watershed_mask, selem=selem)
     seeds = apply_mask(seeds, vertical_cuts(watershed_mask))
     seeds = remove_small_objects(seeds)
@@ -74,9 +78,7 @@ def segment(image):
 
 def main():
     image = argparse_get_image()
-
     segment(image)
-    
 
 
 if __name__ == "__main__":

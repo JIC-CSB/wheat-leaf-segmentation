@@ -25,6 +25,7 @@ def find_angle(image):
     angles = [p["orientation"] for p in properties]
     return sum(angles) / len(angles)
 
+
 @transformation
 def align(image):
     """Return an aligned image."""
@@ -32,10 +33,10 @@ def align(image):
     image = rotate(image, angle)
     return image
 
+
 def main():
     image = argparse_get_image()
     align(image)
-    
 
 
 if __name__ == "__main__":

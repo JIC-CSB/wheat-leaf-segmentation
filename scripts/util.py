@@ -18,6 +18,7 @@ def get_microscopy_collection(input_file):
     microscopy_collection = data_manager.load(input_file)
     return microscopy_collection
 
+
 def argparse_get_image():
     """Return microscopy series image from input file."""
     parser = argparse.ArgumentParser(__doc__)
@@ -28,5 +29,5 @@ def argparse_get_image():
     microscopy_collection = get_microscopy_collection(args.input_file)
 
     image = microscopy_collection.image(s=args.series)
-    image = image[:,:,0]
+    image = image[:, :, 0]
     return image

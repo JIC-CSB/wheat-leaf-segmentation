@@ -4,10 +4,10 @@ from jicbioimage.core.transform import transformation
 from jicbioimage.illustrate import AnnotatedImage
 from jicbioimage.core.util.array import _pretty_color
 
-from align import find_angle
 from util import argparse_get_image
 from segment import segment
 from transform import rotate
+
 
 @transformation
 def annotate(image):
@@ -22,10 +22,10 @@ def annotate(image):
         annotation.mask_region(region.border.dilate(), color)
     return annotation
 
+
 def main():
     image = argparse_get_image()
     annotate(image)
-    
 
 
 if __name__ == "__main__":
