@@ -1,7 +1,5 @@
 """Segment the tissue."""
 
-import argparse
-
 import numpy as np
 
 import skimage.morphology
@@ -17,7 +15,7 @@ from jicbioimage.transform import (
     remove_small_objects,
 )
 
-from util import get_microscopy_collection
+from util import argparse_get_image
 from transform import (
     erosion_binary,
     rotate,
@@ -67,15 +65,7 @@ def segment(image):
 
 
 def main():
-    parser = argparse.ArgumentParser(__doc__)
-    parser.add_argument("input_file", help="path to raw microscopy data")
-    parser.add_argument("series", type=int, help="microscopy series")
-
-    args = parser.parse_args()
-    microscopy_collection = get_microscopy_collection(args.input_file)
-
-    image = microscopy_collection.image(s=args.series)
-    image = image[:,:,0]
+    image = argparse_get_image()
 
     segment(image)
     
