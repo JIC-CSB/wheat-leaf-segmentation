@@ -25,7 +25,9 @@ def annotate(image):
 
 def main():
     image = argparse_get_image()
-    annotate(image)
+    a = annotate(image)
+    with open("annotated.png", "wb") as fh:
+        fh.write(a.png())
 
 
 if __name__ == "__main__":
