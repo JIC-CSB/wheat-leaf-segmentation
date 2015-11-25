@@ -6,12 +6,15 @@ import matplotlib.pyplot as plt
 from util import argparse_get_image
 from segment import segment
 
+def get_lengths(segmentation):
+    """Return list of cell lengths from the segmentation."""
+    props = skimage.measure.regionprops(segmentation)
+    return [p["major_axis_length"] for p in props]
 
 def length_histogram(image):
     """Create histogram of cell lengths."""
     segmentation, angle = segment(image)
-    props = skimage.measure.regionprops(segmentation)
-    lengths = [p["major_axis_length"] for p in props]
+    lengths = get_lengths(segmentation)
     plt.hist(lengths)
     plt.xlabel("Major axis cell length (pixels)", fontsize=16)
     plt.ylabel("Frequency", fontsize=16)
