@@ -8,6 +8,14 @@ from util import argparse_get_image
 from segment import segment
 from transform import rotate
 
+def annotate_segmentation(image, segmentation):
+    """Return annotated segmentation."""
+    annotation = AnnotatedImage.from_grayscale(image)
+    for i in segmentation.identifiers:
+        region = segmentation.region_by_identifier(i)
+        color = _pretty_color()
+        annotation.mask_region(region.border.dilate(), color)
+    return annotation
 
 @transformation
 def annotate(image):
@@ -15,12 +23,7 @@ def annotate(image):
     segmentation, angle = segment(image)
 
     image = rotate(image, angle)
-    annotation = AnnotatedImage.from_grayscale(image)
-    for i in segmentation.identifiers:
-        region = segmentation.region_by_identifier(i)
-        color = _pretty_color()
-        annotation.mask_region(region.border.dilate(), color)
-    return annotation
+    return annotate_segmentation(image, segmentation)
 
 
 def main():
