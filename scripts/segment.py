@@ -52,6 +52,16 @@ def vertical_cuts(thresholded_image):
     cuts = invert_binary(cuts)
     return cuts
 
+def remove_cells_touching_border(segmentation, image):
+    """Remove cells that touch the border."""
+    for i in segmentation.identifiers:
+        region = segmentation.region_by_identifier(i)
+        outline = region.dilate(2).border
+        touching_pixels = image[np.where(outline)]
+        if np.min(touching_pixels) == 0:
+            segmentation[np.where(region)] = 0
+    return segmentation
+
 
 def segment(image):
     """Return a segmented image and rotation angle."""
@@ -72,6 +82,7 @@ def segment(image):
     seeds = connected_components(seeds, connectivity=1, background=0)
 
     segmentation = watershed_with_seeds(image, seeds, mask=watershed_mask)
+    segmentation = remove_cells_touching_border(segmentation, image)
 
     return segmentation, angle
 
