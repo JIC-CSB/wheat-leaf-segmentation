@@ -3,7 +3,6 @@
 import os
 import os.path
 import argparse
-import warnings
 
 from jicbioimage.core.io import AutoWrite
 
@@ -23,16 +22,20 @@ def get_image(microscopy_collection, series):
     image = image[:, :, 0]
     return image
 
+
 def write_csv_header(file_handle):
     """Write csv header to file handle."""
     file_handle.write("series,length")
+
 
 def write_csv_row(series, length, file_handle):
     """Write csv row to file handle."""
     file_handle.write("{},{:.3f}\n".format(series, length))
 
+
 def wheat_variety_analysis(microscopy_collection, output_dir):
-    
+    """Analyse all series in microscopy collection."""
+
     csv_fpath = os.path.join(output_dir, "cell_lengths.csv")
     with open(csv_fpath, "w") as csv_fh:
         write_csv_header(csv_fh)
@@ -46,9 +49,9 @@ def wheat_variety_analysis(microscopy_collection, output_dir):
 
             for l in get_lengths(segmentation):
                 write_csv_row(s, l, csv_fh)
-            
+
             # Create annotated image.
-            image = rotate(image, angle)        
+            image = rotate(image, angle)
             annotation = annotate_segmentation(image, segmentation)
 
             im_fpath = os.path.join(output_dir, "series_{:03d}.png".format(s))
