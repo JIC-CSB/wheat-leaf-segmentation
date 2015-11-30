@@ -7,6 +7,7 @@ import skimage.morphology
 from align import find_angle
 
 from jicbioimage.core.image import Image
+from jicbioimage.core.transform import transformation
 from jicbioimage.segment import connected_components, watershed_with_seeds
 from jicbioimage.transform import (
     equalize_adaptive_clahe,
@@ -26,6 +27,7 @@ from transform import (
 )
 
 
+@transformation
 def create_mask(image):
     """Return a mask for the region of interest."""
     selem = skimage.morphology.disk(2)
@@ -52,6 +54,8 @@ def vertical_cuts(thresholded_image):
     cuts = invert_binary(cuts)
     return cuts
 
+
+@transformation
 def remove_cells_touching_border(segmentation, image):
     """Remove cells that touch the border."""
     for i in segmentation.identifiers:
@@ -59,6 +63,26 @@ def remove_cells_touching_border(segmentation, image):
         outline = region.dilate(2).border
         touching_pixels = image[np.where(outline)]
         if np.min(touching_pixels) == 0:
+            segmentation[np.where(region)] = 0
+    return segmentation
+
+
+@transformation
+def remove_squiggly_cells(segmentation):
+    for i in segmentation.identifiers:
+        region = segmentation.region_by_identifier(i)
+        squiggle_factor = float(region.perimeter) / float(region.area)
+        if squiggle_factor < 0.3:
+            segmentation[np.where(region)] = 0
+    return segmentation
+
+
+@transformation
+def remove_tilted_cells(segmentation):
+    props = skimage.measure.regionprops(segmentation)
+    for p in props:
+        region = segmentation.region_by_identifier(p.label)
+        if abs(p.orientation) < 1.309:  # 75 degrees in radians
             segmentation[np.where(region)] = 0
     return segmentation
 
@@ -83,6 +107,8 @@ def segment(image):
 
     segmentation = watershed_with_seeds(image, seeds, mask=watershed_mask)
     segmentation = remove_cells_touching_border(segmentation, image)
+    segmentation = remove_cells_touching_border(segmentation, mask)
+    segmentation = remove_tilted_cells(segmentation)
 
     return segmentation, angle
 
@@ -90,7 +116,6 @@ def segment(image):
 def main():
     image = argparse_get_image()
     segment(image)
-
 
 if __name__ == "__main__":
     main()
