@@ -6,10 +6,16 @@ import matplotlib.pyplot as plt
 from util import argparse_get_image
 from segment import segment
 
+
 def get_lengths(segmentation):
     """Return list of cell lengths from the segmentation."""
     props = skimage.measure.regionprops(segmentation)
-    return [p["major_axis_length"] for p in props]
+    lengths = []
+    for p in props:
+        minr, minc, maxr, maxc = p.bbox
+        lengths.append(maxr - minr)
+    return lengths
+
 
 def length_histogram(image):
     """Create histogram of cell lengths."""
