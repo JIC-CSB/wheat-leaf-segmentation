@@ -1,5 +1,7 @@
 """Segment the tissue."""
 
+import warnings
+
 import numpy as np
 
 import skimage.morphology
@@ -25,6 +27,11 @@ from transform import (
     remove_large_regions,
     invert_binary,
 )
+
+# Suppress spurious scikit-image warnings.
+warnings.filterwarnings("ignore", module="skimage.exposure._adapthist")
+warnings.filterwarnings("ignore", module="skimage.util.dtype")
+warnings.filterwarnings("ignore", module="skimage.io._io")
 
 
 @transformation
