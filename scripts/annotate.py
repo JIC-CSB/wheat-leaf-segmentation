@@ -23,10 +23,14 @@ def annotate_segmentation(image, segmentation):
 
     for p in props:
 
-        minr, minc, maxr, maxc = p.bbox
-        cval = int(p.centroid[1])
-        line = skimage.draw.line(minr, cval, maxr, cval)
-        annotation.mask_region(line, (0, 255, 0))
+        try:
+            minr, minc, maxr, maxc = p.bbox
+            cval = int(p.centroid[1])
+            line = skimage.draw.line(minr, cval, maxr, cval)
+            annotation.mask_region(line, (0, 255, 0))
+        except IndexError:
+            # Don't draw line if it falls outside of the image.
+            pass
 
     return annotation
 
