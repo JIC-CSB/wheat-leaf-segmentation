@@ -1,5 +1,66 @@
 # README
 
+## Mac installation
+
+Ensure that you have Xcode installed, for example by running ``gcc`` in the
+terminal. Alternatively, you can use the app store.
+
+```bash
+gcc
+```
+
+Install Homebrew.
+
+```bash
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+
+Install freetype and Python using Homebrew.
+
+```bash
+brew install freetype
+brew install python
+```
+
+Install ``virtualenv`` using ``pip`` (virtualenv allows you to create
+a virtual Python environment).
+
+```bash
+sudo pip install virtualenv
+```
+
+Create a virtual environment.
+
+```bash
+virtualenv env
+```
+
+Source the virtual environment (note the ``.`` at the start of the line).
+
+```bash
+. ./env/bin/activate
+```
+
+Install Python dependencies into the virtual environment.
+
+```bash
+pip install numpy
+pip install scipy
+pip install scikit-image
+pip install jicbioimage.core
+pip install jicbioimage.transform
+pip install jicbioimage.segment
+pip install jicbioimage.illustrate
+```
+Follow the
+[jicbioimage installation notes](http://jicbioimage.readthedocs.org/en/latest/installation_notes.html)
+to install ``bioformats``.
+
+Download the
+[wheat segementation](https://githq.nbi.ac.uk/jic-image-analysis/wheat-segmentation)
+project from githq and go into it.
+
+
 ## Windows installation
 
 Install the [Anaconda Python distribution](http://continuum.io/downloads).
