@@ -19,6 +19,7 @@ Install freetype and Python using Homebrew.
 
 ```bash
 brew install freetype
+brew install freeimage
 brew install python
 ```
 
