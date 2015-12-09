@@ -105,6 +105,12 @@ command prompt.
 activate venv
 ```
 
+On a Mac/Linux system one activates the virtual environment using the command below.
+
+```
+. ./venv/bin/activate
+```
+
 Run the analysis.
 
 ```
