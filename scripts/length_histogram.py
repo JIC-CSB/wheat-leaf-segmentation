@@ -3,7 +3,7 @@
 import skimage.measure
 try:
     import matplotlib.pyplot as plt
-except ImportError:
+except RuntimeError:
     pass
 
 from util import argparse_get_image
