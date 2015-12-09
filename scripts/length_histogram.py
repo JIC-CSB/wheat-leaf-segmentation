@@ -1,7 +1,10 @@
 """Create histogram of lengths of cells in tissue."""
 
 import skimage.measure
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    pass
 
 from util import argparse_get_image
 from segment import segment
