@@ -4,7 +4,7 @@ import skimage.draw
 
 from jicbioimage.core.transform import transformation
 from jicbioimage.illustrate import AnnotatedImage
-from jicbioimage.core.util.array import _pretty_color
+from jicbioimage.core.util.color import pretty_color
 
 from util import argparse_get_image
 from segment import segment
