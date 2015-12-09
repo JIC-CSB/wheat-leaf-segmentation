@@ -16,7 +16,7 @@ def annotate_segmentation(image, segmentation):
     annotation = AnnotatedImage.from_grayscale(image)
     for i in segmentation.identifiers:
         region = segmentation.region_by_identifier(i)
-        color = _pretty_color()
+        color = pretty_color()
         annotation.mask_region(region.border.dilate(), color)
 
     props = skimage.measure.regionprops(segmentation)
